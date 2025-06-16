@@ -1,0 +1,84 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <text class="title">尺寸坐标系分析工具</text>
+    <text class="subtitle">横坐标: 0-20cm | 纵坐标: 0-170cm</text>
+   
+  </view>
+  
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="input-row">
+      <input 
+        type="number" 
+        placeholder="X坐标 (0-20cm)" 
+        value="{{currentX}}" 
+        bindinput="bindXInput" 
+        class="coord-input x-input" 
+      />
+      <text class="unit">cm</text>
+      
+      <input 
+        type="number" 
+        placeholder="Y坐标 (0-170cm)" 
+        value="{{currentY}}" 
+        bindinput="bindYInput" 
+        class="coord-input y-input" 
+      />
+      <text class="unit">cm</text>
+    </view>
+    
+    <view class="button-group">
+      <button bindtap="addPoint" class="btn add-btn">添加点</button>
+      <button bindtap="calculateRegression" class="btn regression-btn">计算回归</button>
+      <button bindtap="clearAll" class="btn clear-btn">清空</button>
+    </view>
+  </view>
+  
+  <!-- 坐标系区域 -->
+  <view class="canvas-container">
+    <canvas 
+      canvas-id="coordinateCanvas"
+      id="coordinate-canvas"
+      style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+    ></canvas>
+  </view>
+  
+  <!-- 结果区域 -->
+  <view class="results" wx:if="{{regressionEquation}}">
+    <view class="result-title">回归分析结果</view>
+    <view class="result-item">
+      <text class="label">线性回归方程:</text>
+      <text class="value">{{regressionEquation}}</text>
+    </view>
+
+  </view>
+  
+  <!-- 点列表区域 -->
+  <view class="points-section">
+    <view class="section-header">
+      <text class="section-title">已添加坐标点 (按X坐标排序)</text>
+  
+  
+    </view>
+    
+
+    
+    <scroll-view class="points-container" scroll-y>
+      <view wx:if="{{points.length === 0}}" class="empty-tip">
+        <text>请添加坐标点...</text>
+      </view>
+      
+      <!-- 按X坐标排序显示 -->
+      <view wx:for="{{sortedPoints}}" wx:key="index" class="point-item {{index % 2 === 0 ? 'even' : 'odd'}}">
+        <view class="point-info">
+          <text class="point-number">#{{index + 1}}</text>
+          <text class="point-coord">X: {{item.x}}cm</text>
+          <text class="point-coord">Y: {{item.y}}cm</text>
+        </view>
+        <button bindtap="removePoint" data-index="{{item.originalIndex}}" size="mini" class="remove-btn">删除</button>
+      </view>
+    </scroll-view>
+  </view>
+</view>
